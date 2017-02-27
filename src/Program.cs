@@ -16,6 +16,10 @@ namespace ExeTester {
             startInfo.UseShellExecute = false;
             startInfo.FileName = path;
             startInfo.Arguments = parameters;
+            long longestTicks = 0;
+            long longestMilli = 0;
+            long shortestTicks = long.MaxValue;
+            long shortestMilli = long.MaxValue;
             long totalTimeTicks = 0;
             long totalTimeMilli = 0;
             Stopwatch sw;
@@ -26,16 +30,27 @@ namespace ExeTester {
                     using (Process process = Process.Start(startInfo)) {
                         process.WaitForExit();
                         sw.Stop();
-                        totalTimeTicks += sw.ElapsedMilliseconds;
+                        totalTimeTicks += sw.ElapsedTicks;
                         totalTimeMilli += sw.ElapsedMilliseconds;
+                        if(sw.ElapsedTicks > longestTicks) {
+                            longestTicks = sw.ElapsedTicks;
+                            longestMilli = sw.ElapsedMilliseconds;
+                        }else if(sw.ElapsedTicks < shortestTicks) {
+                            shortestTicks = sw.ElapsedTicks;
+                            shortestMilli = sw.ElapsedMilliseconds;
+                        }
                     };
                 }catch(Exception e) {
                     Console.WriteLine("\n"+e.ToString());
                     return;
                 }
             }
-            Console.WriteLine("Average Ticks: "+(totalTimeTicks / numOfRuns));
-            Console.WriteLine("Average Milliseconds: " + (totalTimeMilli / numOfRuns));
+            Console.WriteLine("\nShortest Ticks taken: " + shortestTicks);
+            Console.WriteLine("Shortest Milliseconds taken: " + shortestMilli);
+            Console.WriteLine("\nAverage Ticks taken: "+(totalTimeTicks / numOfRuns));
+            Console.WriteLine("Average Milliseconds taken: " + (totalTimeMilli / numOfRuns));
+            Console.WriteLine("\nLongest Ticks taken: " + longestTicks);
+            Console.WriteLine("Longest Milliseconds taken: " + longestMilli);
         }
     }
 }
