@@ -16,7 +16,8 @@ namespace ExeTester {
             startInfo.UseShellExecute = false;
             startInfo.FileName = path;
             startInfo.Arguments = parameters;
-            long totalTime = 0;
+            long totalTimeTicks = 0;
+            long totalTimeMilli = 0;
             Stopwatch sw;
             for (int i = 0; i < numOfRuns; i++) {
                 sw = new Stopwatch();
@@ -25,14 +26,16 @@ namespace ExeTester {
                     using (Process process = Process.Start(startInfo)) {
                         process.WaitForExit();
                         sw.Stop();
-                        totalTime += sw.ElapsedTicks;
+                        totalTimeTicks += sw.ElapsedMilliseconds;
+                        totalTimeMilli += sw.ElapsedMilliseconds;
                     };
                 }catch(Exception e) {
                     Console.WriteLine("\n"+e.ToString());
                     return;
                 }
             }
-            Console.WriteLine(totalTime / numOfRuns);
+            Console.WriteLine("Average Ticks: "+(totalTimeTicks / numOfRuns));
+            Console.WriteLine("Average Milliseconds: " + (totalTimeMilli / numOfRuns));
         }
     }
 }
